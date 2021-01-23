@@ -10,6 +10,7 @@ use Yii;
  * @property int $id
  * @property string $name
  * @property string $description
+ * @property string|null $image
  * @property string $structure
  * @property string|null $extra
  * @property string|null $collection
@@ -56,6 +57,7 @@ class Product extends \yii\db\ActiveRecord
             'id' => 'ID',
             'name' => 'Name',
             'description' => 'Description',
+            'image' => 'Image',
             'structure' => 'Structure',
             'extra' => 'Extra',
             'collection' => 'Collection',
@@ -67,32 +69,41 @@ class Product extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[Images]].
-     *
-     * @return \yii\db\ActiveQuery
+     * @param $filename
+     * @return bool
      */
-    public function getImages()
+    public function saveImage(string $filename): bool
     {
-        return $this->hasMany(Image::className(), ['product_id' => 'id']);
+        $this->image = $filename;
+
+        return $this->save(false);
     }
 
     /**
-     * Gets query for [[Category]].
-     *
-     * @return \yii\db\ActiveQuery
+     * @return string
      */
-    public function getCategory()
+    public function getImage(): string
     {
-        return $this->hasOne(Category::className(), ['id' => 'category_id']);
+        if ($this->image)
+        {
+            return '/zvettoys.loc/web/uploads/' . $this->image;
+        }
+
+        return '/zvettoys.loc/web/no-image.png';
+    }
+
+    public function deleteImage(): void
+    {
+        $imageUploadModel = new ImageUpload();
+        $imageUploadModel->deleteCurrentImage($this->image);
     }
 
     /**
-     * Gets query for [[Manufacturer]].
-     *
-     * @return \yii\db\ActiveQuery
+     * @return bool
      */
-    public function getManufacturer()
+    public function beforeDelete()
     {
-        return $this->hasOne(Manufacturer::className(), ['id' => 'manufacturer_id']);
+        $this->deleteImage();
+        return parent::beforeDelete();
     }
 }

@@ -2,6 +2,7 @@
 
 namespace app\modules\admin\controllers;
 
+use PHPUnit\Framework\ExpectationFailedException;
 use Yii;
 use app\models\Image;
 use app\models\ImageSearch;

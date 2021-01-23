@@ -25,6 +25,8 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'extra') ?>
 
+    <?php // echo $form->field($model, 'image') ?>
+
     <?php // echo $form->field($model, 'collection') ?>
 
     <?php // echo $form->field($model, 'enabled') ?>

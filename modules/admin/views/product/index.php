@@ -31,6 +31,14 @@ $this->params['breadcrumbs'][] = $this->title;
             'description',
             'structure',
             'extra',
+            [
+                'format' => 'html',
+                'label' => 'image',
+                'value' => function($data)
+                {
+                    return Html::img($data->getImage(), ['width'=> 250]);
+                }
+            ],
             //'collection',
             //'enabled',
             //'sale',

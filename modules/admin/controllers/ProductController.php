@@ -5,9 +5,11 @@ namespace app\modules\admin\controllers;
 use Yii;
 use app\models\Product;
 use app\models\ProductSearch;
+use app\models\ImageUpload;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\UploadedFile;
 
 /**
  * ProductController implements the CRUD actions for Product model.
@@ -123,5 +125,28 @@ class ProductController extends Controller
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    /**
+     * @param string $id
+     * @return string|\yii\web\Response
+     * @throws NotFoundHttpException
+     */
+    public function actionSetImage(string $id)
+    {
+        $model = new ImageUpload;
+
+        if (Yii::$app->request->isPost)
+        {
+            $product = $this->findModel($id);
+            $file = UploadedFile::getInstance($model, 'image');
+
+            if ($product->saveImage($model->uploadFile($file, $product->image)))
+            {
+                return $this->redirect(['view', 'id' => $product->id]);
+            }
+        }
+
+        return $this->render('image', ['model'=>$model]);
     }
 }
